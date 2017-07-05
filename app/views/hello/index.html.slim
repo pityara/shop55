@@ -1,2 +1,8 @@
-h1 Hello#index
-p Find me in app/views/hello/index.html.slim
+- if session[:user_id]
+  h1
+    |Привет,
+    = User.find(session[:user_id]).name
+  p
+    = link_to "Выход", "sessions/destroy"
+- else
+  = link_to "Войдите", login_path

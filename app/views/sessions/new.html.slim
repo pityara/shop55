@@ -1,0 +1,17 @@
+-if flash[:alert]
+  #notice
+    = flash[:alert]
+
+=form_tag do
+  fieldset
+    legend
+      |Войдите пожалуйста
+    div
+      = label_tag :name, 'Имя'
+      = text_field_tag :name, params[:name]
+    div
+      = label_tag :password, 'Пароль'
+      = password_field_tag :password, params[:password]
+    div
+      = submit_tag "Войти"
+
