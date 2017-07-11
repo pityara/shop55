@@ -1,0 +1,30 @@
+p#notice = notice
+
+p
+  strong Title:
+  = @doc.title
+p
+  strong Text:
+  = @doc.text
+p
+  strong Number:
+  = @doc.number
+p
+  strong Logs:
+  = @doc.logs
+p
+  strong Signed:
+  = @doc.signed
+p
+  strong Agreed:
+  = @doc.agreed
+p
+  strong Resolution:
+  = @doc.resolution
+p
+  strong Done:
+  = @doc.done
+
+= link_to 'Edit', edit_doc_path(@doc)
+'  |
+= link_to 'Back', docs_path

@@ -10,10 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170705154437) do
+ActiveRecord::Schema.define(version: 20170711181816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "docs", force: :cascade do |t|
+    t.string "title"
+    t.text "text"
+    t.string "number"
+    t.text "logs"
+    t.boolean "signed"
+    t.boolean "agreed"
+    t.text "resolution"
+    t.boolean "done"
+    t.bigint "initiator_id"
+    t.bigint "destination_id"
+    t.bigint "signer_id"
+    t.bigint "executor_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["destination_id"], name: "index_docs_on_destination_id"
+    t.index ["executor_id"], name: "index_docs_on_executor_id"
+    t.index ["initiator_id"], name: "index_docs_on_initiator_id"
+    t.index ["signer_id"], name: "index_docs_on_signer_id"
+  end
+
+  create_table "docs_users", id: false, force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "doc_id", null: false
+    t.index ["doc_id", "user_id"], name: "index_docs_users_on_doc_id_and_user_id"
+    t.index ["user_id", "doc_id"], name: "index_docs_users_on_user_id_and_doc_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "name"
@@ -23,4 +51,8 @@ ActiveRecord::Schema.define(version: 20170705154437) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "docs", "users", column: "destination_id"
+  add_foreign_key "docs", "users", column: "executor_id"
+  add_foreign_key "docs", "users", column: "initiator_id"
+  add_foreign_key "docs", "users", column: "signer_id"
 end

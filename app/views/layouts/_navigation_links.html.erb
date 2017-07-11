@@ -1,1 +1,5 @@
 <%# add navigation links to this file %>
+<li class="active"><%= link_to docs_path do %>
+  Все документы
+  <span class="badge"><%= Doc.count %></span>
+  <% end %></li>

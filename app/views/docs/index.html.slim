@@ -1,0 +1,35 @@
+h1 Listing docs
+
+table class="table table-striped"
+  thead
+    tr
+      th Title
+      th Text
+      th Number
+      th Logs
+      th Signed
+      th Agreed
+      th Resolution
+      th Done
+      th
+      th
+      th
+
+  tbody
+    - @docs.each do |doc|
+      tr
+        td = doc.title
+        td = doc.text
+        td = doc.number
+        td = doc.logs
+        td = doc.signed
+        td = doc.agreed
+        td = doc.resolution
+        td = doc.done
+        td = link_to 'Show', doc
+        td = link_to 'Edit', edit_doc_path(doc)
+        td = link_to 'Destroy', doc, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Doc', new_doc_path
