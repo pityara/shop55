@@ -1,35 +1,30 @@
-h1 Listing docs
+h1 Все документы
 
 table class="table table-striped"
   thead
     tr
-      th Title
-      th Text
-      th Number
-      th Logs
-      th Signed
-      th Agreed
-      th Resolution
-      th Done
+      th Название
+      th Номер
+      th Подписан
+      th Согласован
+      th Выполнен
       th
       th
       th
+      th Вложение
 
   tbody
     - @docs.each do |doc|
       tr
         td = doc.title
-        td = doc.text
         td = doc.number
-        td = doc.logs
-        td = doc.signed
-        td = doc.agreed
-        td = doc.resolution
-        td = doc.done
-        td = link_to 'Show', doc
-        td = link_to 'Edit', edit_doc_path(doc)
-        td = link_to 'Destroy', doc, data: { confirm: 'Are you sure?' }, method: :delete
-
+        td = "√" if doc.signed
+        td = "√" if doc.agreed
+        td = "√" if doc.done
+        td = link_to 'Показать', doc
+        td = link_to 'Редактировать', edit_doc_path(doc)
+        td = link_to 'Удалить', doc, data: { confirm: 'Вы уверены?' }, method: :delete
+        td = link_to "Есть", doc.image_url if doc.image.present?
 br
 
-= link_to 'New Doc', new_doc_path
+= link_to 'Новый документ', new_doc_path

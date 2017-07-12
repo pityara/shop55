@@ -1,42 +1,26 @@
-= form_for @doc do |f|
+= form_for @doc, html: {class: "form-horizontal", role: "form"} do |f|
   - if @doc.errors.any?
     #error_explanation
       h2 = "#{pluralize(@doc.errors.count, "error")} prohibited this doc from being saved:"
       ul
         - @doc.errors.full_messages.each do |message|
           li = message
-
-  .field
-    = f.label :title
-    = f.text_field :title
-  .field
-    = f.label :text
-    = f.text_area :text
-  .field
-    = f.label :number
-    = f.text_field :number
-  .field
-    = f.label :logs
-    = f.text_area :logs
-  .field
-    = f.label :signed
-    = f.check_box :signed
-  .field
-    = f.label :agreed
-    = f.check_box :agreed
-  .field
-    = f.label :resolution
-    = f.text_area :resolution
-  .field
-    = f.label :done
-    = f.check_box :done
-  .field
-    = f.label :signer
-    = f.collection_select :signer_id, User.all, :id, :name
-  .field
-    = f.label :executor
-    = f.collection_select :executor_id, User.all, :id, :name
-  .field
-    = f.label :destination
-    = f.collection_select :destination_id, User.all, :id, :name
-  .actions = f.submit
+  = f.label :title
+  = f.text_field :title, class: "form-control", placeholder: "Введите название"
+  br
+  = f.label :text
+  = f.text_area :text, class: "form-control", placeholder: "Введите текст документа", rows: "3"
+  br
+  = f.label :signer
+  = f.collection_select :signer_id, User.all, :id, :name, {}, {class: 'form-control'}
+  br
+  = f.label :executor
+  = f.collection_select :executor_id, User.all, :id, :name, {}, {class: 'form-control'}
+  br
+  = f.label :destination
+  = f.collection_select :destination_id, User.all, :id, :name, {}, {class: 'form-control'}
+  br
+  = f.hidden_field :image, value: f.object.cached_image_data
+  = f.file_field :image, class: "file"
+  br
+  = f.submit class: "btn btn-default", value: "Создать документ"

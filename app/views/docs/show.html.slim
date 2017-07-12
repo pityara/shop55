@@ -1,30 +1,27 @@
 p#notice = notice
 
 p
-  strong Title:
+  strong Тема:
   = @doc.title
 p
-  strong Text:
+  strong Текст:
   = @doc.text
 p
-  strong Number:
+  strong Номер документа:
   = @doc.number
 p
-  strong Logs:
-  = @doc.logs
-p
-  strong Signed:
+  strong Подписан:
   = @doc.signed
 p
-  strong Agreed:
+  strong Согласован:
   = @doc.agreed
 p
-  strong Resolution:
+  strong Резолюция:
   = @doc.resolution
 p
-  strong Done:
+  strong Выполнен:
   = @doc.done
 
-= link_to 'Edit', edit_doc_path(@doc)
+= link_to 'Редактировать', edit_doc_path(@doc)
 '  |
-= link_to 'Back', docs_path
+= link_to 'Назад', docs_path
