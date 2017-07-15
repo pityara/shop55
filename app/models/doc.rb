@@ -1,6 +1,6 @@
 class Doc < ApplicationRecord
   include ImageUploader[:image]
-  before_save :set_params
+  before_create :set_params
   validates :title, :text, presence: true
   belongs_to :executor, class_name: "User"
   belongs_to :initiator, class_name: "User"

@@ -1,9 +1,21 @@
 class DocsController < ApplicationController
-  before_action :set_doc, only: [:show, :edit, :update, :destroy]
+  before_action :set_doc, only: [:show, :edit, :update, :destroy, :sign]
 
   # GET /docs
   # GET /docs.json
+
+  def on_sign_docs
+    @active = 2
+    @osdocs = Doc.where(signer: current_user).where(signed: false)
+  end
+
+  def sign
+    @doc.update!(signed: true)
+    redirect_to root_path, notice: "Документ успешно подписан!"
+  end
+
   def index
+    @active = 1
     @docs = Doc.all
   end
 

@@ -1,5 +1,9 @@
 <%# add navigation links to this file %>
-<li class="active"><%= link_to docs_path do %>
+<li class="<%= "active" if @active == 1 %>"><%= link_to docs_path do %>
   Все документы
   <span class="badge"><%= Doc.count %></span>
+  <% end %></li>
+<li class="<%= "active" if @active == 2 %>"><%= link_to on_sign_path do %>
+  Документы на подпись
+  <span class="badge"><%= Doc.where(signer: current_user).where(signed: false).count %></span>
   <% end %></li>

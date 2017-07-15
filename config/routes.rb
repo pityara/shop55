@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  resources :docs
+  resources :docs do
+    get :sign, on: :member
+  end
+  get 'on_sign', to: 'docs#on_sign_docs', as: 'on_sign'
   controller :sessions do
     get 'login' => :new
     post 'login' => :create

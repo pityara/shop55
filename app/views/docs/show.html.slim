@@ -22,6 +22,9 @@ p
   strong Выполнен:
   = @doc.done
 
+p
+  = link_to "Подписать", sign_doc_path(@doc.id), class: "btn btn-success", role: "button"
+
 = link_to 'Редактировать', edit_doc_path(@doc)
 '  |
 = link_to 'Назад', docs_path
