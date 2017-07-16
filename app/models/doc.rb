@@ -10,7 +10,12 @@ class Doc < ApplicationRecord
 
 
   def set_params
-    self.number = sprintf("%03d", Doc.last.id+1) + '-055'
+    if Doc.last
+      last_doc = Doc.last.id
+    else
+      last_doc = 0
+    end
+    self.number = sprintf("%03d", last_doc+1) + '-055'
     self.signed, self.agreed, self.done = false, false, false
   end
 end
