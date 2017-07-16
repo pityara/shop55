@@ -21,10 +21,14 @@ p
 p
   strong Выполнен:
   = @doc.done
-
 p
+  strong Протокол выполнения:
+  = @doc.logs
+p
+- unless @doc.signed
   = link_to "Подписать", sign_doc_path(@doc.id), class: "btn btn-success", role: "button"
-
-= link_to 'Редактировать', edit_doc_path(@doc)
+  = link_to "Отказать", refuse_doc_path(@doc.id), class: "btn btn-danger", role: "button"
+  p
+  = link_to 'Редактировать', edit_doc_path(@doc)
 '  |
 = link_to 'Назад', docs_path

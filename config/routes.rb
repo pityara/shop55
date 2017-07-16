@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :docs do
     get :sign, on: :member
+    get :refuse, on: :member
   end
   get 'on_sign', to: 'docs#on_sign_docs', as: 'on_sign'
   controller :sessions do

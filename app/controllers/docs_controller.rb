@@ -1,16 +1,24 @@
 class DocsController < ApplicationController
-  before_action :set_doc, only: [:show, :edit, :update, :destroy, :sign]
+  before_action :set_doc, only: [:show, :edit, :update, :destroy, :sign, :refuse]
 
   # GET /docs
   # GET /docs.json
 
   def on_sign_docs
     @active = 2
-    @osdocs = Doc.where(signer: current_user).where(signed: false)
+    @osdocs = Doc.where(signer: current_user, signed: false, refused: false)
   end
 
+  def refuse
+    @doc.update!(refused: true)
+    @doc.logs += "Документу №#{@doc.number} отказано в подписи #{DateTime.now}.\n Подписант: #{@doc.signer.name} \n"
+    @doc.save
+    redirect_to root_path, notice: "Документ будет направлен обратно инициатору!"
+  end
   def sign
     @doc.update!(signed: true)
+    @doc.logs += "Документ №#{@doc.number} подписан #{DateTime.now}.\n Подписант: #{@doc.signer.name} \n"
+    @doc.save
     redirect_to root_path, notice: "Документ успешно подписан!"
   end
 
@@ -38,6 +46,7 @@ class DocsController < ApplicationController
   def create
     @doc = Doc.new(doc_params)
     @doc.initiator = User.find(session[:user_id])
+    @doc.logs = "Документ создан #{DateTime.now} \n Инициатор документа: #{current_user.name} \n "
     respond_to do |format|
       if @doc.save
         format.html { redirect_to @doc, notice: 'Doc was successfully created.' }
