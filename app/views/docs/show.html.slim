@@ -23,7 +23,7 @@ p
   = @doc.done
 p
   strong Протокол выполнения:
-  = @doc.logs
+  = sanitize(@doc.logs)
 p
 - unless @doc.signed
   = link_to "Подписать", sign_doc_path(@doc.id), class: "btn btn-success", role: "button"

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     get :sign, on: :member
     get :refuse, on: :member
   end
+  get 'my_docs', to: 'docs#my_docs', as: 'my_docs'
   get 'on_sign', to: 'docs#on_sign_docs', as: 'on_sign'
   controller :sessions do
     get 'login' => :new

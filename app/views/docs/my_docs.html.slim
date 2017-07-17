@@ -1,0 +1,34 @@
+- unless @my_docs.empty?
+  h1 Мои документы
+  table class="table table-striped"
+    thead
+      tr
+        th Название
+        th Номер
+        th Подписан
+        th Не подписан
+        th Согласован
+        th Выполнен
+        th
+        th
+        th
+        th Вложение
+
+    tbody
+      - @my_docs.each do |doc|
+        tr
+          td = doc.title
+          td = doc.number
+          td = "√" if doc.signed
+          td = "√" if doc.refused
+          td = "√" if doc.agreed
+          td = "√" if doc.done
+          td = link_to 'Показать', doc
+          - unless doc.signed
+            td = link_to 'Редактировать', edit_doc_path(doc)
+          -else
+            td Редактирование запрещено.
+          td = link_to 'Удалить', doc, data: { confirm: 'Вы уверены?' }, method: :delete
+          td = link_to "Есть", doc.image_url if doc.image.present?
+- else
+  h1 Вы не создали не одного документа!

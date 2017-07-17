@@ -3,6 +3,10 @@ class DocsController < ApplicationController
 
   # GET /docs
   # GET /docs.json
+  def my_docs
+    @active = 3
+    @my_docs = Doc.where(initiator: current_user)
+  end
 
   def on_sign_docs
     @active = 2
@@ -11,13 +15,13 @@ class DocsController < ApplicationController
 
   def refuse
     @doc.update!(refused: true)
-    @doc.logs += "Документу №#{@doc.number} отказано в подписи #{DateTime.now}.\n Подписант: #{@doc.signer.name} \n"
+    @doc.logs += "Документу №#{@doc.number} отказано в подписи #{DateTime.now}.<br> Подписант: #{@doc.signer.name} <br>"
     @doc.save
     redirect_to root_path, notice: "Документ будет направлен обратно инициатору!"
   end
   def sign
     @doc.update!(signed: true)
-    @doc.logs += "Документ №#{@doc.number} подписан #{DateTime.now}.\n Подписант: #{@doc.signer.name} \n"
+    @doc.logs += "Документ №#{@doc.number} подписан #{DateTime.now}.<br> Подписант: #{@doc.signer.name} <br>"
     @doc.save
     redirect_to root_path, notice: "Документ успешно подписан!"
   end
@@ -46,10 +50,10 @@ class DocsController < ApplicationController
   def create
     @doc = Doc.new(doc_params)
     @doc.initiator = User.find(session[:user_id])
-    @doc.logs = "Документ создан #{DateTime.now} \n Инициатор документа: #{current_user.name} \n "
+    @doc.logs = "<br>Документ создан #{DateTime.now} <br> Инициатор документа: #{current_user.name} <br> "
     respond_to do |format|
       if @doc.save
-        format.html { redirect_to @doc, notice: 'Doc was successfully created.' }
+        format.html { redirect_to @doc, notice: 'Документ успешно создан и отправлен подписанту, в случае отказа, он будет отмечен во вкладке "Мои документы"' }
         format.json { render :show, status: :created, location: @doc }
       else
         format.html { render :new }
@@ -61,6 +65,8 @@ class DocsController < ApplicationController
   # PATCH/PUT /docs/1
   # PATCH/PUT /docs/1.json
   def update
+    @doc.refused = false
+    @doc.logs += "Документ отредактирован #{DateTime.now}. <br> Документ повторно отправлен на подпись #{@doc.signer.name}<br>"
     respond_to do |format|
       if @doc.update(doc_params)
         format.html { redirect_to @doc, notice: 'Doc was successfully updated.' }
@@ -77,7 +83,7 @@ class DocsController < ApplicationController
   def destroy
     @doc.destroy
     respond_to do |format|
-      format.html { redirect_to docs_url, notice: 'Doc was successfully destroyed.' }
+      format.html { redirect_to docs_url, notice: 'Документ был удалён' }
       format.json { head :no_content }
     end
   end
