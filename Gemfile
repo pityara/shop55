@@ -19,6 +19,7 @@ gem 'kaminari'
 gem 'capistrano-rails', group: :development
 gem 'jquery-rails'
 gem 'shrine'
+gem 'simple_form'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

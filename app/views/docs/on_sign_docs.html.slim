@@ -26,6 +26,9 @@
           td = link_to 'Редактировать', edit_doc_path(doc)
           td = link_to 'Удалить', doc, data: { confirm: 'Вы уверены?' }, method: :delete
           td = link_to "Есть", doc.image_url if doc.image.present?
-          td = link_to "Подписать", sign_doc_path(doc.id), class: "btn btn-success", role: "button"
+          - if doc.agreed
+            td = link_to "Подписать", sign_doc_path(doc.id), class: "btn btn-success", role: "button"
+          - else
+            td Документу требуется согласование!
 - else
   h1 Нет документов на подпись!

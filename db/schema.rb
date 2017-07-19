@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170716075204) do
+ActiveRecord::Schema.define(version: 20170719140429) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,16 @@ ActiveRecord::Schema.define(version: 20170716075204) do
     t.index ["user_id", "doc_id"], name: "index_docs_users_on_user_id_and_doc_id"
   end
 
+  create_table "matches", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "doc_id"
+    t.boolean "match", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doc_id"], name: "index_matches_on_doc_id"
+    t.index ["user_id"], name: "index_matches_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "password_digest"
@@ -57,4 +67,6 @@ ActiveRecord::Schema.define(version: 20170716075204) do
   add_foreign_key "docs", "users", column: "executor_id"
   add_foreign_key "docs", "users", column: "initiator_id"
   add_foreign_key "docs", "users", column: "signer_id"
+  add_foreign_key "matches", "docs"
+  add_foreign_key "matches", "users"
 end
