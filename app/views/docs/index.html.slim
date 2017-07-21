@@ -8,10 +8,11 @@ table class="table table-striped"
       th Подписан
       th Согласован
       th Выполнен
-      th
-      th
-      th
       th Вложение
+      th Создан
+      th
+      th
+      th
 
   tbody
     - @docs.each do |doc|
@@ -21,13 +22,14 @@ table class="table table-striped"
         td = "√" if doc.signed
         td = "√" if doc.agreed
         td = "√" if doc.done
+        td = link_to "Есть", doc.image_url if doc.image.present?
+        td = doc.created_at
         td = link_to 'Показать', doc
         - unless doc.signed
           td = link_to 'Редактировать', edit_doc_path(doc)
         -else
           td Редактирование запрещено.
         td = link_to 'Удалить', doc, data: { confirm: 'Вы уверены?' }, method: :delete
-        td = link_to "Есть", doc.image_url if doc.image.present?
 br
 
 = link_to 'Новый документ', new_doc_path

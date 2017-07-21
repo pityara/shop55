@@ -1,5 +1,3 @@
-p#notice = notice
-
 p
   strong Тема:
   = @doc.title
@@ -24,19 +22,20 @@ p
 p
   strong Протокол выполнения:
   = sanitize(@doc.logs)
--if @doc.matchers.any?
+-unless @doc.agreed
   p
     strong Требуется согласование с:
     br
     - @doc.matchers.each do |matcher|
       = matcher.name
       br
+      br
 -else
   p
-  - unless @doc.signed
+  - unless @doc.signed && !(@doc.signer == current_user)
     = link_to "Подписать", sign_doc_path(@doc.id), class: "btn btn-success", role: "button"
     = link_to "Отказать", refuse_doc_path(@doc.id), class: "btn btn-danger", role: "button"
     p
-    = link_to 'Редактировать', edit_doc_path(@doc)
-'  |
+    p
+= link_to 'Редактировать', edit_doc_path(@doc) unless @doc.signed
 = link_to 'Назад', docs_path

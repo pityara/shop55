@@ -6,3 +6,12 @@
     = link_to "Выход", "sessions/destroy"
 - else
   = link_to "Войдите", login_path
+
+
+.btn-group
+	= link_to login_path do
+		button type="button" class="btn btn-default"
+			|Войти
+	= link_to logout_path do
+		button type="button" class="btn btn-default"
+			|Выйти

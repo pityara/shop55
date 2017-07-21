@@ -4,7 +4,7 @@
   <% end %></li>
 <li class="<%= "active" if @active == 2 %>"><%= link_to on_sign_path do %>
   Документы на подпись
-    <% on_sign_counter = Doc.where(signer: current_user, signed: false, refused: false).count %>
+    <% on_sign_counter = Doc.where(signer: current_user, signed: false, refused: false, agreed: true).count %>
   <% if on_sign_counter != 0 %>
   <span class="badge"><%= on_sign_counter %></span>
   <% end %>
@@ -13,5 +13,12 @@
   Мои документы
   <% my_docs_counter = Doc.where(initiator: current_user, refused: true).count %>
   <% if my_docs_counter != 0 %><span class="badge"><%= my_docs_counter %></span>
+  <% end %>
+  <% end %></li>
+<li class="<%= "active" if @active == 4 %>"><%= link_to on_match_path do %>
+  Документы на согласование
+  <% @omdocs? on_match_counter = @omdocs.count : on_match_counter = 0 %>
+  <% if on_match_counter != 0 %>
+  <span class="badge"><%= on_match_counter %></span>
   <% end %>
   <% end %></li>

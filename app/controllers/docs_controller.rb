@@ -1,6 +1,8 @@
 class DocsController < ApplicationController
-  before_action :set_doc, only: [:show, :edit, :update, :destroy, :sign, :refuse]
-
+  before_action :set_doc, only: [:show, :edit, :update, :destroy, :sign, :refuse, :match]
+  before_action :set_on_match_docs
+  before_action :is_signer, only: [:sign, :refuse]
+  before_action :is_matcher, only: :match
   # GET /docs
   # GET /docs.json
   def my_docs
@@ -10,7 +12,11 @@ class DocsController < ApplicationController
 
   def on_sign_docs
     @active = 2
-    @osdocs = Doc.where(signer: current_user, signed: false, refused: false)
+    @osdocs = Doc.where(signer: current_user, signed: false, refused: false, agreed: true)
+  end
+
+  def on_match_docs
+    @active = 4
   end
 
   def refuse
@@ -19,8 +25,21 @@ class DocsController < ApplicationController
     @doc.save
     redirect_to root_path, notice: "Документ будет направлен обратно инициатору!"
   end
+
+  def match
+    Match.find_by(doc_id: @doc.id, user_id: current_user.id).update(match: true)
+    @doc.logs += "Документ №#{@doc.number} согласован с #{current_user.name} #{DateTime.now}.<br>"
+    @doc.save
+    unless Match.where(doc_id: @doc.id, match: false).any?
+      @doc.update(agreed: true)
+      redirect_to root_path, notice: "Документ согласован, и отправлен на подпись"
+    else
+      redirect_to root_path, notice: "Документ согласован с вами, и ожидает согласование с другими людьми"
+    end
+  end
+
   def sign
-    @doc.update!(signed: true)
+    @doc.update!(signed: true, refused: false)
     @doc.logs += "Документ №#{@doc.number} подписан #{DateTime.now}.<br> Подписант: #{@doc.signer.name} <br>"
     @doc.save
     redirect_to root_path, notice: "Документ успешно подписан!"
@@ -28,7 +47,7 @@ class DocsController < ApplicationController
 
   def index
     @active = 1
-    @docs = Doc.all
+    @docs = Doc.all.order(:number)
   end
 
   # GET /docs/1
@@ -53,7 +72,11 @@ class DocsController < ApplicationController
     @doc.logs = "<br>Документ создан #{DateTime.now} <br> Инициатор документа: #{current_user.name} <br> "
     respond_to do |format|
       if @doc.save
-        format.html { redirect_to @doc, notice: 'Документ успешно создан и отправлен подписанту, в случае отказа, он будет отмечен во вкладке "Мои документы"' }
+        if @doc.matchers.any?
+          format.html { redirect_to @doc, notice: 'Документ успешно создан и отправлен на согласование, вы можете отслеживать его состояние во вкладке "Мои документы".' }
+        else
+          format.html { redirect_to @doc, notice: 'Документ успешно создан и отправлен на подпись, вы можете отслеживать его состояние во вкладке "Мои документы".' }
+        end
         format.json { render :show, status: :created, location: @doc }
       else
         format.html { render :new }
@@ -90,10 +113,35 @@ class DocsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def is_signer
+      if current_user == @doc.signer
+        true
+      else
+        false
+        redirect_to root_path, notice: "Вы не имеете прав подписывать или отказывать в подписи этого документа"
+        end
+    end
     def set_doc
       @doc = Doc.find(params[:id])
     end
 
+    def set_on_match_docs
+      matches = Match.where(user_id: current_user, match: false)
+      ids = []
+      matches.each do |match|
+        ids << match.doc_id
+      end
+        @omdocs = Doc.find(ids)
+    end
+
+    def is_matcher
+      if Match.where(user_id: current_user.id, doc_id: @doc.id, match: false).any?
+        true
+      else
+        false
+        redirect_to root_path, notice: "Вы уже согласовывали этот документ или вас нет в списке согласующих!"
+      end
+    end
     # Never trust parameters from the scary internet, only allow the white list through.
     def doc_params
       params.require(:doc).permit(:title, :text, :number, :logs, :signed, :agreed, :resolution, :done, :signer_id, :destination_id, :executor_id, :image, :matcher_ids => [])
