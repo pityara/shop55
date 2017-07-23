@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     get :sign, on: :member
     get :refuse, on: :member
     get :match, on: :member
+    patch :on_agree, on: :member
   end
   get 'my_docs', to: 'docs#my_docs', as: 'my_docs'
   get 'on_sign', to: 'docs#on_sign_docs', as: 'on_sign'

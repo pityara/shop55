@@ -1,3 +1,7 @@
+.btn-group.btn-group-lg
+  = link_to 'Редактировать', edit_doc_path(@doc), class: "btn btn-default" unless @doc.signed
+  = link_to 'Назад', docs_path, class: "btn btn-default"
+
 p
   strong Тема:
   = @doc.title
@@ -27,15 +31,18 @@ p
     strong Требуется согласование с:
     br
     - @doc.matchers.each do |matcher|
-      = matcher.name
+      = matcher.name_with_initial
       br
       br
 -else
   p
-  - unless @doc.signed && !(@doc.signer == current_user)
-    = link_to "Подписать", sign_doc_path(@doc.id), class: "btn btn-success", role: "button"
-    = link_to "Отказать", refuse_doc_path(@doc.id), class: "btn btn-danger", role: "button"
+  - if !(@doc.signed) && @doc.signer == current_user
+    = form_tag on_agree_doc_path, method: "patch" do
+      strong Если документ требует согласования перед подписью, выберите согласующих, и нажмите "Отправить документ на согласование"
+      = grouped_collection_select :doc, :matchers, Subdivision.all, :users, :name, :id, :name_with_initial, {}, {:class => 'form-control', name: "doc[matcher_ids][]", :multiple=>true}
+      p
+      = link_to "Подписать", sign_doc_path(@doc.id), class: "btn btn-success", role: "button"
+      = submit_tag "Отправить документ на согласование", class: "btn btn-primary"
+      = link_to "Отказать", refuse_doc_path(@doc.id), class: "btn btn-danger", role: "button"
     p
     p
-= link_to 'Редактировать', edit_doc_path(@doc) unless @doc.signed
-= link_to 'Назад', docs_path

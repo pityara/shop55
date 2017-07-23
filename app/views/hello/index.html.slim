@@ -1,7 +1,9 @@
 - if session[:user_id]
   h1
-    |Привет,
-    = User.find(session[:user_id]).name
+    |Здравствуйте,
+    br
+    = User.find(session[:user_id]).name_with_patronymic
+    |!
   p
     = link_to "Выход", "sessions/destroy"
 - else
@@ -15,3 +17,4 @@
 	= link_to logout_path do
 		button type="button" class="btn btn-default"
 			|Выйти
+

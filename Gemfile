@@ -20,6 +20,8 @@ gem 'capistrano-rails', group: :development
 gem 'jquery-rails'
 gem 'shrine'
 gem 'simple_form'
+gem 'bootstrap-select-rails'
+gem 'bootstrap-multiselect_rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -1,10 +1,27 @@
 class DocsController < ApplicationController
-  before_action :set_doc, only: [:show, :edit, :update, :destroy, :sign, :refuse, :match]
+  before_action :set_doc, only: [:show, :edit, :update, :destroy, :sign, :refuse, :match, :on_agree]
   before_action :set_on_match_docs
   before_action :is_signer, only: [:sign, :refuse]
   before_action :is_matcher, only: :match
   # GET /docs
   # GET /docs.json
+
+  def on_agree
+    @doc.update(agreed: false)
+    respond_to do |format|
+      if @doc.update(doc_params)
+        format.html { redirect_to @doc, notice: 'Doc was successfully updated.' }
+        format.json { render :show, status: :ok, location: @doc }
+      else
+        format.html { render :edit }
+        format.json { render json: @doc.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def get_users
+  end
+
   def my_docs
     @active = 3
     @my_docs = Doc.where(initiator: current_user)
@@ -21,14 +38,14 @@ class DocsController < ApplicationController
 
   def refuse
     @doc.update!(refused: true)
-    @doc.logs += "Документу №#{@doc.number} отказано в подписи #{DateTime.now}.<br> Подписант: #{@doc.signer.name} <br>"
+    @doc.logs += "Документу №#{@doc.number} отказано в подписи #{DateTime.now}.<br> Подписант: #{@doc.signer.name_with_initial} <br>"
     @doc.save
     redirect_to root_path, notice: "Документ будет направлен обратно инициатору!"
   end
 
   def match
     Match.find_by(doc_id: @doc.id, user_id: current_user.id).update(match: true)
-    @doc.logs += "Документ №#{@doc.number} согласован с #{current_user.name} #{DateTime.now}.<br>"
+    @doc.logs += "Документ №#{@doc.number} согласован с #{current_user.name_with_initial} #{DateTime.now}.<br>"
     @doc.save
     unless Match.where(doc_id: @doc.id, match: false).any?
       @doc.update(agreed: true)
@@ -40,7 +57,7 @@ class DocsController < ApplicationController
 
   def sign
     @doc.update!(signed: true, refused: false)
-    @doc.logs += "Документ №#{@doc.number} подписан #{DateTime.now}.<br> Подписант: #{@doc.signer.name} <br>"
+    @doc.logs += "Документ №#{@doc.number} подписан #{DateTime.now}.<br> Подписант: #{@doc.signer.name_with_initial} <br>"
     @doc.save
     redirect_to root_path, notice: "Документ успешно подписан!"
   end
@@ -57,6 +74,7 @@ class DocsController < ApplicationController
 
   # GET /docs/new
   def new
+    $matcherid = 0
     @doc = Doc.new
   end
 
@@ -69,7 +87,9 @@ class DocsController < ApplicationController
   def create
     @doc = Doc.new(doc_params)
     @doc.initiator = User.find(session[:user_id])
-    @doc.logs = "<br>Документ создан #{DateTime.now} <br> Инициатор документа: #{current_user.name} <br> "
+    @doc.destination = User.first
+    @doc.executor = User.first
+    @doc.logs = "<br>Документ создан #{DateTime.now} <br> Инициатор документа: #{current_user.name_with_initial} <br> "
     respond_to do |format|
       if @doc.save
         if @doc.matchers.any?
@@ -89,7 +109,7 @@ class DocsController < ApplicationController
   # PATCH/PUT /docs/1.json
   def update
     @doc.refused = false
-    @doc.logs += "Документ отредактирован #{DateTime.now}. <br> Документ повторно отправлен на подпись #{@doc.signer.name}<br>"
+    @doc.logs += "Документ отредактирован #{DateTime.now}. <br> Документ повторно отправлен на подпись #{@doc.signer.name_with_initial}<br>"
     respond_to do |format|
       if @doc.update(doc_params)
         format.html { redirect_to @doc, notice: 'Doc was successfully updated.' }

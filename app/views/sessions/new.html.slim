@@ -6,9 +6,9 @@
   .form-group
     legend
       |Войдите пожалуйста
-    div
-      = label_tag :name,  'Имя'
-      = text_field_tag :name, params[:name]
+
+    = grouped_collection_select :user, :id, Subdivision.all, :users, :name, :id, :name_with_initial, {:prompt => "Пожалуйста, выберите пользователя"}, {:class => 'form-control selectpicker 0', "data-live-search" => "true"}
+
     div
       = label_tag :password, 'Пароль'
       = password_field_tag :password, params[:password]

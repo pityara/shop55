@@ -11,6 +11,7 @@ class Doc < ApplicationRecord
   has_many :matchers, through: :matches, source: :user
 
 
+
   def set_params
     if Doc.last
       last_doc = Doc.last.id
@@ -19,8 +20,8 @@ class Doc < ApplicationRecord
     end
     self.number = sprintf("%03d", last_doc+1) + '-055'
     self.signed, self.done = false, false
-    if !(self.matchers.any?) 
-      self.agreed = true 
+    if !(self.matchers.any?)
+      self.agreed = true
     else
       self.agreed = false
     end

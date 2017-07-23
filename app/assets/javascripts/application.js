@@ -12,5 +12,9 @@
 //
 //= require jquery
 //= require rails-ujs
+//= require bootstrap-multiselect
+//= require bootstrap/alert
+//= require bootstrap/dropdown
 //= require bootstrap-sprockets
+//= require bootstrap-select
 //= require_tree .

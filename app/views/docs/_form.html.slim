@@ -12,19 +12,19 @@
   = f.text_area :text, class: "form-control", placeholder: "Введите текст документа", rows: "3"
   br
   = f.label :signer
-  = f.collection_select :signer_id, User.all, :id, :name, {}, {class: 'form-control'}
+  = f.grouped_collection_select :signer_id, Subdivision.all, :users, :name, :id, :name_with_initial, {:prompt => "Пожалуйста, выберите подписаната"}, {:class => 'form-control selectpicker', "data-live-search" => "true"}
   br
-  = f.label :executor
-  = f.collection_select :executor_id, User.all, :id, :name, {}, {class: 'form-control'}
-  br
-  = f.label :destination
-  = f.collection_select :destination_id, User.all, :id, :name, {}, {class: 'form-control'}
-
-  = f.association :matchers
+  /.comments
+    = f.label :executor
+    = f.grouped_collection_select :id, Subdivision.all, :users, :name, :id, :name_with_initial, {:prompt => "Пожалуйста, выберите исполнителя"}, {:class => 'form-control selectpicker', "data-live-search" => "true"}
+    br
+    = f.label :destination
+    .matchers
+    = f.grouped_collection_select :matchers, Subdivision.all, :users, :name, :id, :name_with_initial, {}, {:class => 'form-control', name: "doc[matcher_ids][]", :multiple=>true}
 
   br
   = f.label :image_data
   = f.hidden_field :image, value: f.object.cached_image_data
   = f.file_field :image, class: "file"
   br
-  = f.submit class: "btn btn-default", value: "Создать документ"
+  = f.submit class: "btn btn-default", value: "На подпись!"

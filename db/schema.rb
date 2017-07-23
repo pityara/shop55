@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170719140429) do
+ActiveRecord::Schema.define(version: 20170722162925) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,12 +55,24 @@ ActiveRecord::Schema.define(version: 20170719140429) do
     t.index ["user_id"], name: "index_matches_on_user_id"
   end
 
+  create_table "subdivisions", force: :cascade do |t|
+    t.integer "number"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "password_digest"
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "surname"
+    t.string "patronymic"
+    t.string "position"
+    t.bigint "subdivision_id"
+    t.index ["subdivision_id"], name: "index_users_on_subdivision_id"
   end
 
   add_foreign_key "docs", "users", column: "destination_id"
